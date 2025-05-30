@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- META TAG PARA EVITAR INDEXACIÓN -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>Infografía: Arquitecturas Distribuidas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a; /* Fallback, canvas will cover this */
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* NEW CANVAS BACKGROUND */
+        #particlesCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* Behind content */
+        }
+        
+        .infographic-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1; /* Ensure content is above canvas */
+        }
+
+        /* HEADER STYLES WITH ENHANCED ANIMATIONS */
+        header {
+            text-align: center;
+            padding: 80px 0;
+            margin-bottom: 80px;
+            position: relative;
+            opacity: 0;
+            animation: slideInFromTop 1.5s ease-out 0.5s forwards;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 6px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981, #f59e0b, #8b5cf6);
+            background-size: 200% 200%;
+            border-radius: 3px;
+            animation: shimmer 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        header h1 {
+            font-size: 4.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4, #10b981);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            animation: gradientShift 4s ease-in-out infinite;
+            text-shadow: 0 0 50px rgba(59, 130, 246, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .presenter-name {
+            font-size: 1.2em;
+            color: #b0bdce;
+            font-weight: 500;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.8s forwards;
+        }
+
+        header .subtitle {
+            font-size: 1.4em;
+            color: #94a3b8;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+        }
+
+        /* ENHANCED SECTION STYLES */
+        section {
+            margin-bottom: 80px;
+            padding: 50px;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden; 
+            backdrop-filter: blur(15px);
+            opacity: 0; 
+            transform: translateY(50px); 
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            z-index: -1;
+            transition: all 0.5s ease;
+        }
+        
+        section:hover::before {
+             background: rgba(255, 255, 255, 0.06);
+        }
+
+        section h2, section h3,
+        section > p, .text-content p,
+        .visual-content img, .diagram-placeholder img,
+        ul li {
+            opacity: 0; 
+        }
+
+        section h2 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        section h3 {
+            font-size: 1.6em;
+            margin: 30px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden; 
+        }
+
+        section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; 
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, currentColor, color-mix(in srgb, currentColor 70%, #fff)); 
+            transition: width 0.6s ease-out;
+        }
+
+        section:hover h3::after {
+            width: 60%; 
+        }
+
+        /* ENHANCED SECTION ICONS */
+        .section-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .section-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.3)); 
+        }
+
+        .section-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 20px 50px rgba(var(--icon-shadow-color, 59, 130, 246), 0.6); 
+        }
+
+        .section-icon:hover img {
+            transform: scale(1.1);
+        }
+        
+        .section-icon::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%; 
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 100%
+            );
+            transform: skewX(-25deg); 
+            transition: left 0.7s ease;
+        }
+
+        .section-icon:hover::before {
+            left: 150%; 
+        }
+
+        /* CONTENT WRAPPER */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        .text-content {
+            color: #e2e8f0;
+        }
+
+        .visual-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            position: sticky;
+            top: 80px; 
+        }
+
+        .visual-content img, .diagram-placeholder img {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            filter: brightness(1.05) contrast(1.05); 
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .visual-content img:hover, .diagram-placeholder img:hover {
+            transform: scale(1.05) translateY(-5px) rotate(1deg); 
+            box-shadow: 0 25px 60px rgba(var(--image-shadow-color, 59, 130, 246), 0.3);
+        }
+        
+        .diagram-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #intro .visual-content img:hover, #intro .diagram-placeholder img:hover { --image-shadow-color: 59, 130, 246; }
+        #cluster .visual-content img:hover, #cluster .diagram-placeholder img:hover { --image-shadow-color: 16, 185, 129; }
+        #grid .visual-content img:hover, #grid .diagram-placeholder img:hover { --image-shadow-color: 245, 158, 11; }
+        #cloud .visual-content img:hover, #cloud .diagram-placeholder img:hover { --image-shadow-color: 139, 92, 246; }
+        #conclusion .diagram-placeholder img:hover { --image-shadow-color: 59, 130, 246; }
+
+        /* ENHANCED LIST STYLES */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0;
+        }
+
+        ul li {
+            padding: 15px 0 15px 40px;
+            position: relative;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+            font-size: 1.1em;
+            transition: color 0.3s ease, transform 0.3s ease, padding-left 0.3s ease, opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        
+        ul li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: pulse 2s ease-in-out infinite;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        ul li:hover {
+            color: #ffffff;
+            transform: translateX(10px);
+            padding-left: 50px;
+        }
+
+        ul li:hover::before {
+            transform: translateY(-50%) scale(1.3) rotate(45deg);
+        }
+
+        ul li strong {
+            font-weight: 600;
+        }
+
+        /* SPECIFIC SECTION STYLES */
+        #intro {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.08));
+            --section-main-color: #3b82f6;
+            --icon-shadow-color: 59, 130, 246;
+            position: relative; 
+        }
+        #intro::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3b82f6, #06b6d4);
+            border-radius: 25px 0 0 25px;
+            z-index: 0;
+        }
+
+        #intro h3, #intro ul li strong, #intro ul li:hover::before { color: var(--section-main-color); }
+        #intro ul li::before { color: #06b6d4; } 
+
+        #cluster {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.08));
+            border-left: 6px solid #10b981;
+            --section-main-color: #10b981;
+            --icon-shadow-color: 16, 185, 129;
+        }
+        #cluster h2, #cluster h3, #cluster ul li strong, #cluster ul li:hover::before { color: var(--section-main-color); }
+        #cluster ul li::before { color: #2dd4bf; }
+        #cluster .section-icon { 
+            background: linear-gradient(135deg, #10b981, #2dd4bf); 
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4); 
+        }
+
+        #grid {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.08));
+            border-left: 6px solid #f59e0b;
+            --section-main-color: #f59e0b;
+            --icon-shadow-color: 245, 158, 11;
+        }
+        #grid h2, #grid h3, #grid ul li strong, #grid ul li:hover::before { color: var(--section-main-color); }
+        #grid ul li::before { color: #fbbf24; }
+        #grid .section-icon { 
+            background: linear-gradient(135deg, #f59e0b, #fbbf24); 
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4); 
+        }
+
+        #cloud {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(168, 85, 247, 0.08));
+            border-left: 6px solid #8b5cf6;
+            --section-main-color: #8b5cf6;
+            --icon-shadow-color: 139, 92, 246;
+        }
+        #cloud h2, #cloud h3, #cloud ul li strong, #cloud ul li:hover::before { color: var(--section-main-color); }
+        #cloud ul li::before { color: #a78bfa; }
+        #cloud .section-icon { 
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa); 
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4); 
+        }
+
+        /* SERVICE MODEL ICONS */
+        .service-model-icon {
+            width: 28px;
+            height: 28px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 12px;
+            border-radius: 8px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .service-model-icon:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        /* ENHANCED COMPARISON TABLE */
+        #comparison {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.08));
+            border-left: 6px solid #ef4444;
+            --section-main-color: #ef4444;
+            --icon-shadow-color: 239, 68, 68;
+        }
+        #comparison h2, #comparison h3 { color: var(--section-main-color); }
+        #comparison .section-icon { 
+            background: linear-gradient(135deg, #ef4444, #f87171); 
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4); 
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px) saturate(150%); 
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 25px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .comparison-table th {
+            background: rgba(31, 41, 55, 0.7); 
+            color: var(--section-main-color);
+            font-weight: 700;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-table tbody tr {
+            background: rgba(255, 255, 255, 0.02);
+            transition: background-color 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s ease;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: rgba(var(--section-main-color-rgb, 239, 68, 68), 0.15); 
+            transform: scale(1.01); 
+            box-shadow: 0 5px 20px rgba(var(--section-main-color-rgb, 239, 68, 68), 0.2);
+        }
+        #comparison { --section-main-color-rgb: 239, 68, 68; }
+
+
+        .comparison-table tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+         .comparison-table tbody tr:nth-child(even):hover {
+            background: rgba(var(--section-main-color-rgb, 239, 68, 68), 0.2);
+        }
+
+
+        .comparison-table td {
+            color: #e2e8f0;
+            font-size: 1.05em;
+        }
+
+        .comparison-table td strong {
+            color: var(--section-main-color);
+            font-weight: 600;
+        }
+
+        /* ENHANCED CONCLUSION SECTION -- MODIFIED */
+        #conclusion {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.15));
+            /* border: 3px solid; REMOVED */
+            /* border-image: linear-gradient(to right, rgba(59, 130, 246, 0.6), rgba(16, 185, 129, 0.6)) 1; REMOVED */
+            text-align: center;
+            position: relative;
+            --section-main-color: #3b82f6;
+            --icon-shadow-color: 59, 130, 246; 
+        }
+
+        #conclusion::after { /* ADDED for left border */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--section-main-color), #10b981); /* Using section main color and a secondary from its icon */
+            border-radius: 25px 0 0 25px;
+            z-index: 0;
+        }
+
+
+        #conclusion h2 {
+            color: var(--section-main-color);
+            justify-content: center;
+        }
+        #conclusion h3 { color: var(--section-main-color); }
+
+
+        #conclusion .section-icon { 
+            background: linear-gradient(135deg, #3b82f6, #10b981); 
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4); 
+        }
+
+        #conclusion p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #cbd5e1;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* SCROLL PROGRESS INDICATOR */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 5px; 
+            background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981, #f59e0b, #8b5cf6, #ef4444);
+            background-size: 200% 100%; 
+            z-index: 1000;
+            transition: width 0.05s ease-out; 
+            animation: scrollProgressAnim 4s linear infinite;
+        }
+
+        @keyframes scrollProgressAnim {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* FLOATING ACTION BUTTON */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #06b6d4, #3b82f6); 
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 992px) { 
+            .content-wrapper {
+                grid-template-columns: 1fr; 
+                gap: 40px;
+            }
+            .visual-content {
+                position: static; 
+                margin-top: 30px;
+            }
+            header h1 {
+                font-size: 3.8em;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .infographic-container {
+                padding: 20px 15px;
+            }
+
+            header h1 {
+                font-size: 3em;
+            }
+
+            header .subtitle {
+                font-size: 1.2em;
+            }
+
+            section {
+                padding: 40px 25px;
+            }
+
+            section h2 {
+                font-size: 2em;
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .comparison-table {
+                font-size: 0.9em;
+                display: block; 
+                overflow-x: auto;
+                white-space: nowrap; 
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 15px 10px;
+                 min-width: 120px; 
+            }
+            .comparison-table th:first-child,
+            .comparison-table td:first-child {
+                 min-width: 150px;
+            }
+
+
+            .section-icon {
+                width: 70px;
+                height: 70px;
+                margin-right: 0; 
+            }
+            .fab {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* KEYFRAME ANIMATIONS */
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+
+        /* SMOOTH SCROLLING */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* LOADING ANIMATION */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease; 
+            visibility: visible;
+        }
+         .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-top-color: #3b82f6; 
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .loading-text {
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+           /* QR CODE BANNER STYLES */
+        .qr-code-banner {
+            background: rgba(10, 10, 10, 0.85); 
+            backdrop-filter: blur(5px);
+            color: #e0e0e0;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            text-align: left;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.5);
+            position: relative; 
+            z-index: 100; 
+            margin-bottom: 30px; 
+        }
+
+        .qr-code-image img {
+            width: 130px; 
+            height: 130px;
+            border-radius: 8px;
+            background-color: white; 
+            padding: 5px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .qr-code-text h2 {
+            font-size: 1.6em;
+            color: #3b82f6; 
+            margin-bottom: 8px;
+        }
+
+        .qr-code-text p {
+            font-size: 1em;
+            margin-bottom: 5px;
+            max-width: 450px; 
+        }
+        .qr-code-text p.qr-url-info {
+            font-size: 0.85em;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+
+        /* Responsive QR Banner */
+        @media (max-width: 768px) {
+            .qr-code-banner {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 15px;
+            }
+            .qr-code-image img {
+                width: 100px;
+                height: 100px;
+            }
+            .qr-code-text h2 {
+                font-size: 1.4em;
+            }
+            .qr-code-text p {
+                font-size: 0.9em;
+            }
+        }
+
+        .infographic-container {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Cargando Infografía...</div>
+    </div>
+
+    <!-- New Animated Background -->
+    <canvas id="particlesCanvas"></canvas>
+    
+    
+      <div class="qr-code-banner">
+        <div class="qr-code-image">
+            <img src="./assets/codigo-qr.png" alt="Escanea para ver la infografía interactiva">
+        </div>
+        <div class="qr-code-text">
+            <h2>¡Experimenta la Infografía Interactiva!</h2>
+            <p>Escanea este código QR con tu móvil o tablet para acceder a la versión animada completa.</p>
+            <p class="qr-url-info">https://g4s70n.github.io/distcloud</p> 
+        </div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Volver arriba">↑</button>
+
+    <div class="infographic-container">
+        <header>
+            <h1>ARQUITECTURAS DISTRIBUIDAS</h1>
+           <p class="presenter-name">
+  Gastó<span style="display:none;">-</span>n Nieto
+</p>
+
+            <p class="subtitle">De Cluster a Cloud: cómo cooperan miles de máquinas para resolver problemas complejos</p>
+        </header>
+
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="intro">
+            <h2>
+                <div class="section-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/9541/9541753.png" alt="Interconnected global network icon">
+                </div>
+                El Poder de la Colaboración Computacional
+            </h2>
+            <p>Una arquitectura distribuida es un sistema cuyos componentes están ubicados en diferentes máquinas conectadas en red, que se comunican y coordinan sus acciones mediante el paso de mensajes.</p>
+            <p><strong>Objetivo principal:</strong> Mejorar el rendimiento, la escalabilidad, la fiabilidad y compartir recursos de forma eficiente.</p>
+            <div class="diagram-placeholder">
+                <img src="https://static.vecteezy.com/system/resources/previews/055/610/864/non_2x/interconnected-nodes-icon-illustrating-neural-networks-in-technology-creative-environment-digital-design-perspective-free-png.png" alt="Diagrama simple mostrando varias computadoras (nodos) conectadas, con flechas indicando comunicación">
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: CLUSTER COMPUTING -->
+        <section id="cluster">
+            <h2>
+                <div class="section-icon">
+                    <img src="https://cdn-icons-png.freepik.com/256/2777/2777161.png?semt=ais_hybrid" alt="Server cluster icon">
+                </div>
+                CLUSTER COMPUTING: Fuerza Unificada
+            </h2>
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h3>¿Qué es?</h3>
+                    <p>Un conjunto de computadoras (nodos) homogéneas, conectadas por una red de alta velocidad (generalmente LAN), que trabajan juntas como un único y potente sistema. A menudo, los nodos comparten almacenamiento y son gestionados por un software especializado.</p>
+                    
+                    <h3>Características Clave:</h3>
+                    <ul>
+                        <li><strong>Acoplamiento Fuerte:</strong> Nodos estrechamente interconectados.</li>
+                        <li><strong>Homogeneidad:</strong> Nodos con hardware y software similar o idéntico.</li>
+                        <li><strong>Gestión Centralizada:</strong> Se administra como una sola entidad.</li>
+                        <li><strong>Imagen de Sistema Único (SSI):</strong> A veces, aparece como una única máquina.</li>
+                        <li><strong>Alta Disponibilidad (HA):</strong> Tolerancia a fallos.</li>
+                        <li><strong>Equilibrio de Carga:</strong> Distribución de tareas.</li>
+                    </ul>
+                    
+                    <h3>Ventajas:</h3>
+                    <ul>
+                        <li>Alto rendimiento para cómputo paralelo.</li>
+                        <li>Buena relación precio/rendimiento.</li>
+                        <li>Alta disponibilidad y tolerancia a fallos.</li>
+                    </ul>
+                    
+                    <h3>Desventajas:</h3>
+                    <ul>
+                        <li>Escalabilidad limitada por LAN.</li>
+                        <li>Menor flexibilidad geográfica.</li>
+                        <li>Administración puede ser compleja.</li>
+                    </ul>
+                    
+                    <h3>Casos de Uso Típicos:</h3>
+                    <ul>
+                        <li>Servidores web de alto tráfico, bases de datos HPC, renderizado.</li>
+                    </ul>
+                </div>
+                <div class="visual-content">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2620/2620313.png" alt="Diagrama de cluster computing">
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: GRID COMPUTING -->
+        <section id="grid">
+            <h2>
+                <div class="section-icon">
+                     <img src="https://cdn-icons-png.freepik.com/512/2620/2620477.png" alt="Global grid computing icon">
+                </div>
+                GRID COMPUTING: Colaboración a Gran Escala
+            </h2>
+             <div class="content-wrapper">
+                <div class="text-content">
+                    <h3>¿Qué es?</h3>
+                    <p>Una infraestructura distribuida que agrupa recursos computacionales heterogéneos y geográficamente dispersos, de diferentes dominios administrativos, para resolver problemas a gran escala. Se enfoca en compartir recursos entre 'Organizaciones Virtuales' (VOs).</p>
+                    
+                    <h3>Características Clave:</h3>
+                    <ul>
+                        <li><strong>Acoplamiento Débil:</strong> Recursos conectados por internet/WAN.</li>
+                        <li><strong>Heterogeneidad:</strong> Diversidad de hardware y software.</li>
+                        <li><strong>Distribución Geográfica:</strong> Múltiples ubicaciones.</li>
+                        <li><strong>Gestión Descentralizada:</strong> Cada organización controla sus recursos.</li>
+                        <li><strong>Uso de Middleware:</strong> Software para gestión, seguridad y acceso.</li>
+                    </ul>
+                    
+                    <h3>Ventajas:</h3>
+                    <ul>
+                        <li>Acceso a enorme poder de cómputo.</li>
+                        <li>Utilización de recursos infrautilizados.</li>
+                        <li>Colaboración interinstitucional.</li>
+                    </ul>
+                    
+                    <h3>Desventajas:</h3>
+                    <ul>
+                        <li>Complejidad de gestión y seguridad.</li>
+                        <li>Ancho de banda puede ser cuello de botella.</li>
+                        <li>Fiabilidad de recursos no garantizada.</li>
+                    </ul>
+                    
+                    <h3>Casos de Uso Típicos:</h3>
+                    <ul>
+                        <li>Proyectos científicos (SETI@home, LHC), análisis de datos masivos, simulaciones.</li>
+                    </ul>
+                </div>
+                <div class="visual-content">
+                     <img src="https://cdn-icons-png.flaticon.com/512/3344/3344239.png" alt="Diagrama de grid computing">
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CLOUD COMPUTING -->
+        <section id="cloud">
+            <h2>
+                <div class="section-icon">
+                    <img src="https://cdn-icons-png.freepik.com/256/9594/9594919.png?semt=ais_hybrid" alt="Cloud computing icon">
+                </div>
+                CLOUD COMPUTING: Flexibilidad Bajo Demanda
+            </h2>
+            <div class="content-wrapper">
+                <div class="text-content">
+                    <h3>¿Qué es?</h3>
+                    <p>Un modelo que permite el acceso ubicuo, conveniente y bajo demanda a un conjunto compartido de recursos computacionales configurables que pueden ser rápidamente aprovisionados y liberados.</p>
+                    
+                    <h3>Características Esenciales (NIST):</h3>
+                    <ul>
+                        <li>Autoservicio Bajo Demanda</li>
+                        <li>Acceso Amplio a la Red</li>
+                        <li>Agrupación de Recursos</li>
+                        <li>Elasticidad Rápida</li>
+                        <li>Servicio Medido (Pago por Uso)</li>
+                    </ul>
+                    
+                    <h3>Modelos de Servicio:</h3>
+                    <ul>
+                        <li><img class="service-model-icon" src="https://cdn-icons-png.flaticon.com/512/11871/11871455.png" alt="IaaS icon"> <strong>IaaS:</strong> Infraestructura como Servicio (VMs, almacenamiento).</li>
+                        <li><img class="service-model-icon" src="https://cdn-icons-png.freepik.com/512/11632/11632178.png" alt="PaaS icon"> <strong>PaaS:</strong> Plataforma como Servicio (desarrollo y gestión de apps).</li>
+                        <li><img class="service-model-icon" src="https://cdn-icons-png.flaticon.com/512/4940/4940803.png" alt="SaaS icon"> <strong>SaaS:</strong> Software como Servicio (apps listas para usar).</li>
+                    </ul>
+                     
+                    <h3>Modelos de Despliegue:</h3>
+                    <ul>
+                        <li>Nube Pública, Privada, Híbrida, Comunitaria.</li>
+                    </ul>
+                </div>
+                 <div class="visual-content">
+                    <img src="https://static.vecteezy.com/system/resources/previews/057/299/936/non_2x/lan-network-diagram-for-business-and-technology-concept-wan-3d-of-computer-networking-on-white-background-vector.jpg" alt="Diagrama de cloud computing">
+                    
+                    <h3>Ventajas:</h3>
+                    <ul>
+                        <li>Coste inicial reducido, alta escalabilidad, accesibilidad global.</li>
+                    </ul>
+                    
+                    <h3>Desventajas:</h3>
+                    <ul>
+                        <li>Dependencia del proveedor, preocupaciones de seguridad/privacidad.</li>
+                    </ul>
+                    
+                    <h3>Casos de Uso Típicos:</h3>
+                    <ul>
+                        <li>Alojamiento web/apps, almacenamiento, Big Data, desarrollo, IoT.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: COMPARATIVA RÁPIDA -->
+        <section id="comparison">
+            <h2>
+                <div class="section-icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/7131/7131623.png" alt="Comparison scales icon">
+                </div>
+                ¿Cuál Elegir? Un Vistazo Comparativo
+            </h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>CLUSTER</th>
+                        <th>GRID</th>
+                        <th>CLOUD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Acoplamiento</strong></td>
+                        <td>Fuerte</td>
+                        <td>Débil</td>
+                        <td>Variable (generalmente débil entre usuarios)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Homogeneidad</strong></td>
+                        <td>Homogéneo</td>
+                        <td>Heterogéneo</td>
+                        <td>Homogéneo (infra), Hetero (servicios)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Escalabilidad</strong></td>
+                        <td>Limitada por LAN</td>
+                        <td>Muy alta (global)</td>
+                        <td>Muy alta (bajo demanda)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Administración</strong></td>
+                        <td>Centralizada, compleja</td>
+                        <td>Descentralizada, muy compleja</td>
+                        <td>Gestionada por proveedor/usuario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Propietario</strong></td>
+                        <td>Única organización</td>
+                        <td>Múltiples organizaciones</td>
+                        <td>Proveedor / Organización</td>
+                    </tr>
+                     <tr>
+                        <td><strong>Objetivo Ppal.</strong></td>
+                        <td>Alto rendimiento, alta disponibilidad</td>
+                        <td>Compartir recursos masivos</td>
+                        <td>Servicios bajo demanda, agilidad</td>
+                    </tr>
+                     <tr>
+                        <td><strong>Virtualización</strong></td>
+                        <td>Opcional</td>
+                        <td>Opcional</td>
+                        <td>Fundamental</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SECCIÓN 6: CONCLUSIÓN -->
+        <section id="conclusion">
+            <h2>
+                <div class="section-icon">
+                    <img src="https://cdn3.iconfinder.com/data/icons/information-technology-3/96/Icon_Set_IT_Rocket-512.png" alt="Technological future rocket icon">
+                </div>
+                El Futuro es Distribuido y Conectado
+            </h2>
+            <p>Cluster, Grid y Cloud Computing representan diferentes enfoques para la computación distribuida, cada uno con sus fortalezas y casos de uso ideales. A menudo, estas arquitecturas no son mutuamente excluyentes y pueden combinarse.</p>
+            <p>La tendencia es hacia una mayor abstracción, automatización y servicios bajo demanda, donde el Cloud Computing está liderando la transformación digital.</p>
+            <div class="diagram-placeholder">
+                <img src="https://www.rapyder.com/wp-content/uploads/2024/05/61-1.jpg" alt="Diagrama de evolución tecnológica">
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Canvas Animation Script
+        'use strict';
+        
+        var canvas = document.getElementById("particlesCanvas");
+        var context;
+
+        var mousePos = { x: 0, y: 0 }; 
+
+        if (canvas && canvas.getContext) {
+            context = canvas.getContext("2d");
+        } else {
+            console.error("Canvas not supported or not found");
+        }
+
+        var timeoutID = null;
+        var rafID = null;
+
+        function initCanvasAnimation() {  
+            if (!context) return;
+
+            var net; 
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            var nodesLength = Math.floor(canvas.width * canvas.height / 7000); 
+            
+            net = new Net();
+            net.populate(nodesLength);
+
+            if (rafID) {
+                window.cancelAnimationFrame(rafID);
+            }
+            
+            function renderCanvasAnimation() { 
+                if (!net) return; 
+                net.update();
+                net.draw();
+                net.connect(120 + Math.random() * 60); 
+                rafID = window.requestAnimationFrame(renderCanvasAnimation);
+            }
+            renderCanvasAnimation(); 
+        }
+        
+        window.addEventListener('load', initCanvasAnimation, false);
+        window.addEventListener('resize', function() {
+            clearTimeout(timeoutID);
+            if (rafID) window.cancelAnimationFrame(rafID);
+            timeoutID = setTimeout(initCanvasAnimation, 200);
+        }, false);
+        
+        function trackMouse(e) {
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const event = e.touches ? e.touches[0] : e;
+            mousePos.x = (event.clientX - rect.left) * (canvas.width / rect.width);
+            mousePos.y = (event.clientY - rect.top) * (canvas.height / rect.height);
+        }
+        window.addEventListener('mousemove', trackMouse, false);
+        window.addEventListener('touchmove', trackMouse, false);
+
+
+        class Net {
+            constructor() {
+                this.nodes = [];
+                this.length = undefined;
+            }
+
+            populate(length) {
+                this.length = length;
+                this.nodes = []; 
+                for (var i = 0; i < length; i++) {
+                    var xPos = Math.floor(getRandom(0, canvas.width));
+                    var yPos = Math.floor(getRandom(0, canvas.height));
+                    this.nodes.push(new Node(xPos, yPos));
+                }
+            }
+
+            update() {
+                for (var i = 0; i < this.length; i++) {
+                    this.nodes[i].update();
+                }
+            }
+
+            draw() {
+                context.fillStyle = "#0a0a0a"; 
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                
+                for (var i = 0; i < this.length; i++) {
+                    this.nodes[i].draw();
+                }
+            }
+
+            connect(distanceMax) {
+                for (var i = 0; i < this.length; i++) { 
+                    for (var j = i + 1; j < this.length; j++) { 
+                        var a = this.nodes[j].x - this.nodes[i].x;
+                        var b = this.nodes[j].y - this.nodes[i].y;
+                        var distance = Math.sqrt(a*a + b*b);
+
+                        if (distance < distanceMax) {
+                            context.beginPath();
+                            context.moveTo(this.nodes[i].x, this.nodes[i].y);
+                            context.lineTo(this.nodes[j].x, this.nodes[j].y);
+                            const opacity = (1 - (distance / distanceMax)) * Math.min(this.nodes[i].depth, this.nodes[j].depth) * 0.3; 
+                            const lineColors = ['rgba(59,130,246,', 'rgba(6,182,212,', 'rgba(16,185,129,', 'rgba(139,92,246,'];
+                            const chosenLineColor = lineColors[ (i+j) % lineColors.length ]; 
+                            context.strokeStyle = `${chosenLineColor}${Math.max(0, opacity)})`;
+                            context.lineWidth = 0.5 + (1 - (distance / distanceMax)) * 1; 
+                            context.stroke();
+                        }
+                    }
+                }
+            }
+        }
+        
+        const NODE_COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
+        
+        function hexToRgbArray(hex) { 
+            let r = 0, g = 0, b = 0;
+            if (hex.length === 4) { 
+                r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16);
+            } else if (hex.length === 7) { 
+                r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16);
+            }
+            return [r,g,b];
+        }
+
+        class Node {
+            constructor(_x, _y) {
+                this.x = _x;
+                this.y = _y;
+                this.vx = (Math.random() - 0.5) * 0.8; 
+                this.vy = (Math.random() - 0.5) * 0.8; 
+                this.radius = getRandom(1.5, 3.5); 
+                this.depth = Math.floor(getRandom(2, 9))/10; 
+                this.rgbColor = hexToRgbArray(NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)]);
+            }
+
+            update() {
+                this.vx += (Math.random() - 0.5) * 0.03; 
+                this.vy += (Math.random() - 0.5) * 0.03;
+
+                const max_speed = 0.8; 
+                const current_speed_sq = this.vx * this.vx + this.vy * this.vy;
+                if (current_speed_sq > max_speed * max_speed) {
+                    const current_speed = Math.sqrt(current_speed_sq);
+                    this.vx = (this.vx / current_speed) * max_speed;
+                    this.vy = (this.vy / current_speed) * max_speed;
+                }
+
+                this.x += this.vx * (1 - this.depth * 0.6);
+                this.y += this.vy * (1 - this.depth * 0.6);
+
+                if (this.x > canvas.width + this.radius * 2) this.x = -this.radius * 2;
+                if (this.x < -this.radius * 2) this.x = canvas.width + this.radius * 2;
+                if (this.y > canvas.height + this.radius * 2) this.y = -this.radius * 2;
+                if (this.y < -this.radius * 2) this.y = canvas.height + this.radius * 2;
+            }
+
+            draw() {
+                var alpha = (1 - this.depth * 0.75); 
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                context.fillStyle = `rgba(${this.rgbColor[0]},${this.rgbColor[1]},${this.rgbColor[2]}, ${Math.max(0.1, alpha)})`;
+                context.fill();
+            }
+        }
+
+        function getRandom(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+    </script>
+
+    <script>
+        // Infographic Interaction Script
+        document.addEventListener('DOMContentLoaded', () => {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loadingOverlay.classList.add('hidden');
+                }, 500); 
+            });
+
+            const scrollProgress = document.getElementById('scrollProgress');
+            const bodyEl = document.body;
+            const htmlEl = document.documentElement;
+
+            window.addEventListener('scroll', () => {
+                const totalHeight = Math.max(bodyEl.scrollHeight, bodyEl.offsetHeight, htmlEl.clientHeight, htmlEl.scrollHeight, htmlEl.offsetHeight) - window.innerHeight;
+                const scrollPercentage = (window.pageYOffset / totalHeight) * 100;
+                scrollProgress.style.width = `${scrollPercentage}%`;
+            });
+
+            const sections = document.querySelectorAll('section');
+            const sectionObserverOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (!entry.target.classList.contains('already-animated')) { 
+                            entry.target.classList.add('visible'); 
+                            entry.target.classList.add('already-animated');
+
+                            let animationDelay = 0.1; 
+
+                            const animateElement = (element, animationType, stagger = 0.1) => {
+                                if (element) {
+                                    element.style.animation = `${animationType} 0.7s ease-out ${animationDelay}s forwards`;
+                                    animationDelay += stagger;
+                                }
+                            };
+
+                            const animateElementsGroup = (elements, animationType, staggerIndividual = 0.1, staggerGroupEnd = 0.1) => {
+                                if (elements && elements.length > 0) {
+                                    elements.forEach(el => {
+                                        el.style.animation = `${animationType} 0.7s ease-out ${animationDelay}s forwards`;
+                                        animationDelay += staggerIndividual;
+                                    });
+                                    animationDelay += staggerGroupEnd; 
+                                }
+                            };
+                            
+                            const animateListItems = (elements, animationType, staggerIndividual = 0.08, staggerGroupEnd = 0.1) => {
+                                 if (elements && elements.length > 0) {
+                                    elements.forEach(el => {
+                                        el.style.animation = `${animationType} 0.5s ease-out ${animationDelay}s forwards`;
+                                        animationDelay += staggerIndividual;
+                                    });
+                                    animationDelay += staggerGroupEnd;
+                                }
+                            };
+
+                            animateElement(entry.target.querySelector('h2'), 'slideInLeft', 0.2);
+                            animateElementsGroup(entry.target.querySelectorAll(':scope > p'), 'slideInLeft', 0.15, 0.1);
+                            animateElementsGroup(entry.target.querySelectorAll('h3'), 'slideInLeft', 0.15, 0.1);
+                            animateElementsGroup(entry.target.querySelectorAll('.text-content p'), 'slideInLeft', 0.1, 0.1);
+                            animateElementsGroup(entry.target.querySelectorAll('.visual-content img'), 'slideInRight', 0.15, 0.1);
+                            animateElementsGroup(entry.target.querySelectorAll('.diagram-placeholder img'), 'fadeInUp', 0.15, 0.1);
+                            animateListItems(entry.target.querySelectorAll('ul li'), 'slideInLeft', 0.08, 0.1);
+                        }
+                    }
+                });
+            }, sectionObserverOptions);
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+
+    <!-- PIXEL DE SEGUIMIENTO OCULTO -->
+    <img src="https://flagcounter.me/fWS/" alt="Flag Counter" style="position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; opacity: 0; border:0;" aria-hidden="true">
+
+</body>
+</html>
